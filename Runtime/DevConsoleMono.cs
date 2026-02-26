@@ -3494,6 +3494,9 @@ namespace DavidFDev.DevConsole
         private Vector2 GetMousePosition()
         {
 #if USE_NEW_INPUT_SYSTEM
+            if(UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.enabled)
+                if(UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count>0)
+                    return UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches[0].screenPosition;
             return Mouse.current.position.ReadValue();
 #else
             return Input.mousePosition;
