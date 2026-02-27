@@ -886,7 +886,6 @@ namespace DavidFDev.DevConsole
             {
                 return;
             }
-
             Log($"({DateTime.Now:HH:mm:ss}) <color={ErrorColour}><b>Exception:</b> </color>{exception.Message}");
         }
 
@@ -1112,9 +1111,9 @@ namespace DavidFDev.DevConsole
         ///     Invoked when a Unity log message is received.
         /// </summary>
         /// <param name="logString"></param>
-        /// <param name="_"></param>
+        /// <param name="stackTrace"></param>
         /// <param name="type"></param>
-        private void OnLogMessageReceived(string logString, string _, LogType type)
+        private void OnLogMessageReceived(string logString, string stackTrace, LogType type)
         {
             string time = DateTime.Now.ToString("HH:mm:ss");
             switch (type)
@@ -1138,7 +1137,9 @@ namespace DavidFDev.DevConsole
                     {
                         return;
                     }
-                    Log($"({time}) <color={ErrorColour}><b>Exception:</b> </color>{logString}");
+
+                    var firstLine = stackTrace.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => line.Contains(" (at ") && !line.StartsWith("   at "));;
+                    Log($"({time}) <color={ErrorColour}><b>Exception:</b> </color>{logString} {firstLine}");
                     break;
                 case LogType.Warning:
                     if (!_displayUnityWarnings)
