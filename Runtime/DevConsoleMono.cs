@@ -2071,6 +2071,17 @@ namespace DavidFDev.DevConsole
                     LogSuccess($"Loaded scene at build index {i}.");
                 }
             ), true);
+            
+            AddCommand(Command.Create(
+                "scene_reload",
+                "",
+                "Reload the current active scene",
+                ()=>
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                    DevConsole.LogSuccess($"Reloaded scene \"{SceneManager.GetActiveScene().name}\" at build index <b>{SceneManager.GetActiveScene().buildIndex}</b>.");
+                }
+            ), true);
 
             AddCommand(Command.Create<int>(
                 "scene_info",
