@@ -156,7 +156,7 @@ namespace DavidFDev.DevConsole
         /// </summary>
         [Header("Logs")]
         [SerializeField]
-        private GameObject _logFieldPrefab = null;
+        private InputField _logFieldPrefab = null;
 
         /// <summary>
         ///     Reference to the transform that new log fields should be parented to.
@@ -501,10 +501,10 @@ namespace DavidFDev.DevConsole
         /// </summary>
         private int LogTextSize
         {
-            get => _logFieldPrefab.GetComponent<InputField>().textComponent.fontSize;
+            get => _logFieldPrefab.textComponent.fontSize;
             set
             {
-                Text text = _logFieldPrefab.GetComponent<InputField>().textComponent;
+                Text text = _logFieldPrefab.textComponent;
                 if (text.fontSize == value)
                 {
                     return;
@@ -1172,11 +1172,11 @@ namespace DavidFDev.DevConsole
             _versionText.text = $"v{_version}";
             _initPosition = _dynamicTransform.anchoredPosition;
             _initSize = _dynamicTransform.sizeDelta;
-            _initLogFieldWidth = _logFieldPrefab.GetComponent<RectTransform>().sizeDelta.x;
-            _initLogTextSize = _logFieldPrefab.GetComponent<InputField>().textComponent.fontSize;
+            _initLogFieldWidth = ((RectTransform)_logFieldPrefab.transform).sizeDelta.x;
+            _initLogTextSize = _logFieldPrefab.textComponent.fontSize;
             _currentLogFieldWidth = _initLogFieldWidth;
             _resizeButtonColour = _resizeButtonImage.color;
-            _logFieldPrefab.SetActive(false);
+            _logFieldPrefab.gameObject.SetActive(false);
             _inputField.onValueChanged.AddListener(x => OnInputValueChanged(x));
             _inputField.onValidateInput += OnValidateInput;
 
@@ -3405,13 +3405,13 @@ namespace DavidFDev.DevConsole
         private void AddLogField()
         {
             // Instantiate a new log field and set it up with default values
-            GameObject obj = Instantiate(_logFieldPrefab, _logContentTransform);
-            InputField logField = obj.GetComponent<InputField>();
+            var logField = Instantiate(_logFieldPrefab, _logContentTransform);
+            //InputField logField = obj.GetComponent<InputField>();
             logField.text = string.Empty;
-            RectTransform rect = obj.GetComponent<RectTransform>();
+            RectTransform rect = (RectTransform)logField.transform;//obj.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(_currentLogFieldWidth, rect.sizeDelta.y);
             _logFields.Add(logField);
-            obj.SetActive(true);
+            logField.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -3437,7 +3437,7 @@ namespace DavidFDev.DevConsole
             RectTransform rect;
             foreach (InputField logField in _logFields)
             {
-                rect = logField.GetComponent<RectTransform>();
+                rect = (RectTransform)logField.transform;
                 rect.sizeDelta = new Vector2(_currentLogFieldWidth, rect.sizeDelta.y);
             }
             RebuildLayout();
